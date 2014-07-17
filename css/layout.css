@@ -1,7 +1,11 @@
 ﻿/*字体样式导入*/
 @font-face {
-	font-family: "PhonePadTwo",
-	src: url("phonepadtwo.eot");
+    font-family: 'PhonepadTwo';
+    src: url('phonepadtwo.eot');
+    src: url('phonepadtwo.eot') format('embedded-opentype'),
+         url('phonepadtwo.woff') format('woff'),
+         url('phonepadtwo.ttf') format('truetype'),
+         url('phonepadtwo.svg#.PhonepadTwoRegular') format('svg');
 }
 
 body{
