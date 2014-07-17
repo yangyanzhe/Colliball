@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="author" content="杨妍喆, 林聪, 清华软件">
+	<meta content="text/html; charset=utf-8">
+	<link rel="stylesheet" type="text/css" href="css/layout.css">
+	<link rel="stylesheet" type="text/css" href="css/focus.css">
+	<script type="text/javascript" src="js/Box2dWeb-2.1.a.3.js"></script>
+	<script type="text/javascript" src="js/lufylegend-1.9.0.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	</script>
+</head>
+
+<body>
+	<div id = "myCanvas"></div>
+	
+	<div class="cover">
+		<div class="form">
+	        <h3 class="title">What's your nickname?</h3>
+	        <input class="usernameInput" type="text" maxlength="14" />
+    	</div>
+	</div>
+
+	<!-游戏界面左侧，分等候区waiting与比赛区gaming->
+	<div class="partLeft">
+		<div id="waitingLeft">
+			<!-- 左侧记分牌 -->
+			<div id = "leftScore" class="score">0</div>
+			<div id = "leftBall"></div>
+		</div>
+		<div id="gamingLeft">
+		</div>
+	</div>
+
+	<div class="partRight">
+		<div id="waitingRight">
+			<div id = "rightScore" class="score">0</div>
+			<div id = "rightBall"></div>
+		</div>
+		<div id="gamingRight">
+		</div>
+	</div>
+
+</body>
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/colliball.js"></script>
+<script type="text/javascript" src="js/client.js"></script>
+
+</html>
