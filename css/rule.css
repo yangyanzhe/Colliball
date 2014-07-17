@@ -1,0 +1,93 @@
+#contentWrap div{
+	display: block;
+}
+
+#contentWrap{
+	width: 100%;
+	height: 80%;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+#Slides_leftLogo, #Slides_rightLogo{
+	width: 80px;
+	height: 80px;
+	padding:10px;
+	/*  margin-top: 200px;  */
+	cursor: pointer;
+
+}
+
+#Slides_leftLogo{
+	top:40%;
+	position: absolute;
+	opacity: 0;
+	transition: opacity 0.5s;
+}
+
+#Slides_rightLogo{
+	top:40%;
+	right: 0;
+	position: absolute;
+	opacity: 0;
+	transition: opacity 0.5s;
+}
+
+#Slides_leftLogo img{
+	width: 80px;
+	height: 80px;
+
+}
+
+#Slides_rightLogo img{
+	width: 80px;
+	height: 80px;
+}
+/********************图片轮滚部分**********************/
+#slideWrap{
+	width: 1024px;
+	height: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 100px;
+}
+
+#contentBackground{
+	width: 200%;
+	height: 400px;
+	float: left;
+	background: #000000;
+	display: block;
+	z-index: 9;
+}
+
+#slideBox{
+	width: 960px;
+	height: 400px;
+	opacity: 0;
+	transition: opacity 2s;
+	overflow: hidden;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#imageBox{
+	position: absolute;
+	height: 400px;
+	width: 7000px;
+    top: 0px;
+    left: 0px;
+    margin-bottom: 300px;
+    overflow: hidden;
+    display: inline;
+}
+
+.slideImg{
+	width: 960px;
+	height: 400px;
+	display: block;
+	float: left;
+}

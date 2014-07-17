@@ -6,6 +6,7 @@ var user = 1; //两人为1,2；四人为1,2,3,4
 var IsValid = false;
 var leftScore = 0;
 var rightScore = 0;
+var historyMode = 0;
 
 
 //mode1
@@ -32,8 +33,15 @@ var leftdown = "yellow_";
 var rightup = "blue_";
 var rightdown = "green_";
 
+var bgm1 = document.createElement("audio");
+bgm1.src = "sound/dumbwaystodielyrics.mp3";
+bgm1.play();
+var bgm2 = document.createElement("audio");
+bgm2.src = "sound/dumbwaystodie.mp3";
+
 
 function gameModeInit(gameMode){
+	historyMode = gameMode;
 	if (gameMode == 1){
 		$("#leftScore").attr("id", "leftScore_1");
 		$("#rightScore").attr("id", "rightScore_1");
@@ -128,7 +136,7 @@ function random(min,max){
 
 //加载图片并初始化canvas
 init(10,"myCanvas", w, h,main);  
-var backLayer,cLayer,wallLayer,bitmap,loadingLayer;  
+var backLayer,cLayer,wallLayer,bitmap,loadingLayer, effectLayer;  
 var imglist = {};  
 var imgData = new Array(  
         {name:"green_1",path:"img/green_1.png"},  
@@ -142,14 +150,20 @@ var imgData = new Array(
         {name:"red_3",path:"img/red_3.png"}, 
         {name:"blue_1",path:"img/blue_1.png"},  
         {name:"blue_2",path:"img/blue_2.png"},  
-        {name:"blue_3",path:"img/blue_3.png"}
+        {name:"blue_3",path:"img/blue_3.png"},
+        {name:"white_1",path:"img/white_1.png"},
+        {name:"white_2",path:"img/white_2.png"},
+        {name:"white_3",path:"img/white_3.png"}
         );  
 
 function main(){      
 	 //将box2d创建的debug刚体也一起显示出来
     LGlobal.setDebug(false);   
-    backLayer = new LSprite();    
-    addChild(backLayer);      
+    backLayer = new LSprite();  
+    effectLayer = new LSprite();
+    addChild(effectLayer); 
+    addChild(backLayer);   
+        
       
     //进度条功能  
     loadingLayer = new LoadingSample3(); 
@@ -263,7 +277,7 @@ function check(){
 	                createBall_1("left", user, leftBall.shift(), leftUserTime.shift());
 	            }
 	            else {
-	                alert("游戏结束");
+	                end();
 	                step = -1;
 	            }
 	        };
@@ -271,9 +285,9 @@ function check(){
 	    }
 	    if (step == 2.5)//用户操作直至操作完毕
 	    {
-	        
 	        if (IsValid == true){
-	            checkSleep(true);
+	        	deleteCorrectSign();
+	            checkSleep();
 	        } 
 	    }
 	    if (step == 3){
@@ -288,8 +302,12 @@ function check(){
 	            user = 1;
 	        }
 	        checkScore_1();
-	        step = 1;
 	        IsValid = false;
+	        step = 5;
+	        setTimeout(function(){
+	        	step = 1;
+	        }, 1000);
+	        
 	    }
 	}
 	if (Mode == 2)
@@ -315,7 +333,7 @@ function check(){
 	                createBall_2("rightdown", user, rightdownBall.shift(), rightdownUserTime.shift());
 	            }
 	            else{
-	                alert("游戏结束");
+	                end();
 	                step = -1;
 	            }
 	        }
@@ -337,7 +355,7 @@ function check(){
 	                createBall_2("rightdown", user, rightdownBall.shift(), rightdownUserTime.shift());
 	            }
 	            else{
-	                alert("游戏结束");
+	                end();
 	                step = -1;
 	            }
 	        }
@@ -359,7 +377,7 @@ function check(){
 	                createBall_2("leftdown", user, leftdownBall.shift(), leftdownUserTime.shift());
 	            }
 	            else{
-	                alert("游戏结束");
+	                end();
 	                step = -1;
 	            }
 	        }
@@ -381,7 +399,7 @@ function check(){
 	                createBall_2("leftdown", user, leftdownBall.shift(), leftdownUserTime.shift());
 	            }
 	            else{
-	                alert("游戏结束");
+	                end();
 	                step = -1;
 	            }
 	        } 
@@ -391,7 +409,8 @@ function check(){
 	    {
 	        
 	        if (IsValid == true){
-	            checkSleep(true);
+	        	deleteCorrectSign();
+	            checkSleep();
 	        } 
 	    }
 	    if (step == 3){
@@ -423,8 +442,11 @@ function check(){
 				$("#leftScore_2").css('color', "#ffd308");
 				$("#rightScore_2").css('color', "#39e8af");
             }
-	        step = 1;
 	        IsValid = false;
+	        step = 5;
+	        setTimeout(function(){
+	        	step = 1;
+	        }, 1000);
 	    }
 	}
 }
@@ -432,8 +454,7 @@ function check(){
 function createBall_1(position, id, pic, usertime){
     cLayer = new LSprite(); 
     //图片
-    bitmap = new LBitmap(new LBitmapData(imglist[pic]));  
-    cLayer.addChild(bitmap);
+    
     //坐标
     if (position == "left") {
         x = 0.075 * w;
@@ -443,18 +464,30 @@ function createBall_1(position, id, pic, usertime){
         x = 0.925 * w;
         y = h / 2;
     };
+    createWave(x, y, pic);
+    bitmap1 = new LBitmap(new LBitmapData(imglist["white_" + pic.substr(-1)]));  
+    bitmap1.alpha = 0;
+    cLayer.addChild(bitmap1);
+
+    bitmap2 = new LBitmap(new LBitmapData(imglist[pic])); 
+    cLayer.addChild(bitmap2);
+
     cLayer.x = x - cLayer.getWidth() / 2;
     cLayer.y = y - cLayer.getHeight() / 2; 
+
+    bitmap1.x =  -(bitmap1.getWidth() - bitmap2.getWidth())/2;
+    bitmap1.y = -(bitmap1.getHeight() - bitmap2.getHeight())/2;
 
     //用户
     cLayer.belongUser = id;
     cLayer.picName = pic;
     cLayer.useTime = usertime + 1;
-    cLayer.inValid = true;
-
+    cLayer.isValid = true;
+	cLayer.alpha = 0;
     backLayer.addChild(cLayer);  
-    cLayer.addBodyCircle(bitmap.getWidth()*0.5, bitmap.getHeight()*0.5, bitmap.getWidth()*0.5, 1, .5,.4,.5);  
-    cLayer.setBodyMouseJoint(true); 
+    cLayer.addBodyCircle(bitmap2.getWidth()*0.5, bitmap1.getWidth()*0.5, bitmap1.getHeight()*0.5, 1, .5,.4,.5);  
+    cLayer.setBodyMouseJoint(true);
+    LTweenLite.to(cLayer, 0.5, {alpha:1});
     
 
     cLayer.box2dBody.m_angularDamping = 100;
@@ -474,9 +507,7 @@ function createBall_1(position, id, pic, usertime){
 
 function createBall_2(position, id, pic, usertime){
     cLayer = new LSprite(); 
-    //图片
-    bitmap = new LBitmap(new LBitmapData(imglist[pic]));  
-    cLayer.addChild(bitmap);
+    
     //坐标
     if (position == "leftup") {
         x = 0.075 * w;
@@ -494,18 +525,32 @@ function createBall_2(position, id, pic, usertime){
         x = 0.925 * w;
         y = 3 * h / 4;
     };
+    createWave(x, y, pic);
+    bitmap1 = new LBitmap(new LBitmapData(imglist["white_" + pic.substr(-1)]));  
+    bitmap1.alpha = 0;
+    cLayer.addChild(bitmap1);
+
+    bitmap2 = new LBitmap(new LBitmapData(imglist[pic])); 
+    cLayer.addChild(bitmap2);
+    
+
     cLayer.x = x - cLayer.getWidth() / 2;
     cLayer.y = y - cLayer.getHeight() / 2; 
+
+    bitmap1.x =  -(bitmap1.getWidth() - bitmap2.getWidth())/2;
+    bitmap1.y = -(bitmap1.getHeight() - bitmap2.getHeight())/2; 
 
     //用户
     cLayer.belongUser = id;
     cLayer.picName = pic;
     cLayer.useTime = usertime + 1;
-    cLayer.inValid = true;
+    cLayer.isValid = true;
 
+    cLayer.alpha = 0;
     backLayer.addChild(cLayer);  
-    cLayer.addBodyCircle(bitmap.getWidth()*0.5, bitmap.getHeight()*0.5, bitmap.getWidth()*0.5, 1, .5,.4,.5);  
-    cLayer.setBodyMouseJoint(true); 
+    cLayer.addBodyCircle(bitmap2.getWidth()*0.5, bitmap1.getHeight()*0.5, bitmap1.getWidth()*0.5, 1, .5,.4,.5);  
+    cLayer.setBodyMouseJoint(true);
+    LTweenLite.to(cLayer, 0.5, {alpha:1});
     //线阻力和角阻力
     
     cLayer.box2dBody.m_angularDamping = 100;
@@ -597,7 +642,7 @@ var isMouseDown = 0;
 //加入波点
 function mouseDown_1(evt){ 
     isMouseDown = 1; 
-
+    deleteWave();
     var a = evt.currentTarget;
     if (a.IsValid == false){
         a.setBodyMouseJoint(false);
@@ -618,7 +663,6 @@ function mouseDown_1(evt){
     else a.setBodyMouseJoint(false);
     a.IsValid = false;
     step = 2.5;
-
 }  
 
 function mouseMove_1(evt){
@@ -645,7 +689,7 @@ function mouseMove_1(evt){
 
 function mouseDown_2(evt){ 
     isMouseDown = 1; 
-
+    deleteWave();
     var a = evt.currentTarget;
     if (a.IsValid == false){
         a.setBodyMouseJoint(false);
@@ -711,6 +755,10 @@ function checkSleep(){
         };
     }
     if(num == backLayer.childList.length - 5){
+    	if (Mode == 1)
+    		correctSign_1();
+    	if (Mode == 2)
+    		correctSign_2();
         step = 3;
     }
 }
@@ -736,7 +784,7 @@ function deleteBall_1(){
                     rightBall.push(temp);
                     rightUserTime.push(a.useTime);
                 }
-                a.remove();
+                LTweenLite.to(a, 0.5, {alpha:0, onComplete:function(e){e.remove();}});
             }
             else if (a.x + a.getWidth()/2 < 0.15 * w){
                 if (a.useTime <= 3){
@@ -745,7 +793,7 @@ function deleteBall_1(){
                     leftBall.push(temp);
                     leftUserTime.push(a.useTime);
                 }
-                a.remove();
+                LTweenLite.to(a, 0.5, {alpha:0, onComplete:function(e){e.remove();}});
             }
         }
         step = 4;
@@ -780,8 +828,9 @@ function deleteBall_2(){
                         rightdownBall.push(temp);
                         rightdownUserTime.push(a.useTime);
                     }
+                    LTweenLite.to(a, 0.5, {alpha:0, onComplete:function(e){e.remove();}});
                 }
-                a.remove();
+                
             }
             else if (a.x + a.getWidth()/2 < 0.15 * w){
                 if (a.useTime <= 3){
@@ -797,8 +846,9 @@ function deleteBall_2(){
                         leftdownBall.push(temp);
                         leftdownUserTime.push(a.useTime);
                     }
+                    LTweenLite.to(a, 0.5, {alpha:0, onComplete:function(e){e.remove();}});
                 }
-                a.remove();
+                
             }
         }
         step = 4;
@@ -806,8 +856,8 @@ function deleteBall_2(){
 }
 
 function checkScore_1(){
-    var leftScore = 0;
-    var rightScore = 0;
+    leftScore = 0;
+    rightScore = 0;
     for (i = 5; i < backLayer.childList.length; i++){
         a = backLayer.childList[i];
         if (a.belongUser == 1 && a.x + a.getWidth()/2 > 0.5 * w && a.x + a.getWidth()/2 < 0.85 * w)
@@ -826,8 +876,8 @@ function checkScore_1(){
 }
 
 function checkScore_2(){
-    var leftScore = 0;
-    var rightScore = 0;
+    leftScore = 0;
+    rightScore = 0;
     for (i = 5; i < backLayer.childList.length; i++){
         a = backLayer.childList[i];
         if (((a.belongUser == 1) || (a.belongUser == 2)) && a.x + a.getWidth()/2 > 0.5 * w && a.x + a.getWidth()/2 < 0.85 * w)
@@ -843,4 +893,64 @@ function checkScore_2(){
     $("#rightScore_2").fadeIn(500);
 }
 
+function correctSign_1(){
+    //坐标
+	for (i = 5; i < backLayer.childList.length; i++){
+        k = backLayer.childList[i];
+        if (k.belongUser == 1 && k.x + k.getWidth()/2 > 0.5 * w && k.x + k.getWidth()/2 < 0.85 * w)
+            LTweenLite.to(k.childList[0], 0.2, {alpha:0.8}).to(k.childList[0], 0.2, {alpha:0.2}).to(k.childList[0], 0.2, {alpha:1});
+        if (k.belongUser == 2 && k.x + k.getWidth()/2 < 0.5 * w && k.x + k.getWidth()/2 > 0.15 * w)
+            LTweenLite.to(k.childList[0], 0.2, {alpha:0.8}).to(k.childList[0], 0.2, {alpha:0.2}).to(k.childList[0], 0.2, {alpha:1});
+    }
+}
 
+function correctSign_2(){
+    //坐标
+	for (i = 5; i < backLayer.childList.length; i++){
+        k = backLayer.childList[i];
+        if (((k.belongUser == 1) || (k.belongUser == 2)) && k.x + k.getWidth()/2 > 0.5 * w && k.x + k.getWidth()/2 < 0.85 * w)
+            LTweenLite.to(k.childList[0], 0.2, {alpha:0.8}).to(k.childList[0], 0.2, {alpha:0.2}).to(k.childList[0], 0.2, {alpha:1});
+        if (((k.belongUser == 3) || (k.belongUser == 4)) && k.x + k.getWidth()/2 < 0.5 * w && k.x + k.getWidth()/2 > 0.15 * w)
+            LTweenLite.to(k.childList[0], 0.2, {alpha:0.8}).to(k.childList[0], 0.2, {alpha:0.2}).to(k.childList[0], 0.2, {alpha:1});
+    }
+}
+
+function deleteCorrectSign(){
+	for (i = 5; i < backLayer.childList.length; i++){
+        k = backLayer.childList[i];
+        if (k.childList[0].alpha > 0)
+      		LTweenLite.to(k.childList[0], 0.5, {alpha:0});
+    }
+}
+
+function createWave(wx, wy, pic){
+	var wave = new Array();
+	for(var i = 0; i < 3; i++){
+		wave[i] = new LSprite();
+		wave[i].x = wx;
+		wave[i].y = wy;
+		p = new LBitmap(new LBitmapData(imglist[pic]));
+		p.alpha = 0.3;
+		p.x = -p.getWidth()*0.5;
+		p.y = -p.getWidth()*0.5;
+		wave[i].addChild(p);
+		effectLayer.addChild(wave[i]);
+	}
+	LTweenLite.to(wave[0], 1.5, {scaleX: 2, scaleY: 2,  loop: true}).to(wave[0], 0, {scaleX: 1, scaleY: 1});
+	LTweenLite.to(wave[0].childList[0], 1.5, {alpha: 0,  loop: true}).to(wave[0].childList[0], 0, {alpha:0.3});
+	setTimeout(function(){
+		LTweenLite.to(wave[1], 1.5, {scaleX: 2, scaleY: 2,  loop: true}).to(wave[1], 0, {scaleX: 1, scaleY: 1});
+		LTweenLite.to(wave[1].childList[0], 1.5, {alpha: 0,  loop: true}).to(wave[1].childList[0], 0, {alpha:0.3});
+	}, 500);
+	setTimeout(function(){
+		LTweenLite.to(wave[2], 1.5, {scaleX: 2, scaleY: 2,  loop: true}).to(wave[2], 0, {scaleX: 1, scaleY: 1});
+		LTweenLite.to(wave[2].childList[0], 1.5, {alpha: 0,  loop: true}).to(wave[2].childList[0], 0, {alpha:0.3});
+	}, 1000);
+}
+
+function deleteWave(){
+	while (effectLayer.childList.length > 0)
+	{
+		effectLayer.childList[0].remove();
+	}
+}

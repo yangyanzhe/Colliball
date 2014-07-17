@@ -4,16 +4,21 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta content="text/html; charset=utf-8">
 	<link rel="stylesheet" type="text/css" href="css/layout.css">
-	<link rel="stylesheet" href="css/focus.css" type="text/css">
+	<link rel="stylesheet" href="css/rule.css" type="text/css">
 	<script type="text/javascript" src="js/jquery.js"></script>
 	<script type="text/javascript" src="js/cover.js"></script>	
+	<script type="text/javascript" src="js/slides.js"></script>
 	<script src="js/Box2dWeb-2.1.a.3.js" type="text/javascript"></script>
 	<script src="js/lufylegend-1.9.0.js" type="text/javascript"></script>
 </head>
 
 <body>
+	<!-- 游戏规则说明区域 -->
+	
+
+
 	<div id = "myCanvas"></div>
-	<div class="cover">
+	<div id = "coverStart" class="cover">
 		<div class="hint">
 			<span class = "option" rel="2Player">2 Player </span>
 			<span class = "option" rel="4Player">4 Player </span>
@@ -23,7 +28,7 @@
 			</span>
 		</div>
 		<div class="footer">
-		<a>More</a>
+		<span id = "gameRule">How To Play</span>
 		</div>
 	</div>
 
@@ -42,6 +47,39 @@
 		</div>
 		<div id="gamingRight"></div>
 	</div>
+
+	<div id = "coverEnd" class="cover">
+		<div class = "scoreResult">
+			<span id = "spanLeft">0</span>
+			<span id = "spanMid">:</span>
+			<span id = "spanRight">0</span>
+		</div>
+		<div class="footer">
+			<span class = "option" id = "replay">Replay</span>
+			<span class = "option" id = "return">Return</span>
+		</div>
+	</div>
+
+	
+	<div id='contentWrap'>
+        <!-游戏规则滚播->
+        <section id='slideWrap'>
+            <div id='slideBox'>
+              <div id='imageBox'>
+                <a><img src="img/0.png" class="slideImg"></a>
+                <a><img src="img/1.png" class="slideImg"></a>
+                <a><img src="img/2.png" class="slideImg"></a>
+                <a><img src="img/3.png" class="slideImg"></a>
+                <a><img src="img/4.png" class="slideImg"></a>
+                <a><img src="img/5.png" class="slideImg"></a>
+                <a><img src="img/6.png" class="slideImg"></a>
+              </div>
+            </div>
+        </section>
+        <div id='Slides_leftLogo'><img src="img/left.png"></div>
+        <div id='Slides_rightLogo'><img src="img/right.png"></div>
+
+    </div>
 
    <script type="text/javascript" src="js/colliball.js"></script>
 </body>
